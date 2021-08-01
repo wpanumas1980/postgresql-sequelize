@@ -2,7 +2,7 @@ require('dotenv').config();
 const express =require('express') ;
 const bodyParser =require('body-parser') ;
 const cors =require('cors') ;
-const pool =require('./db') ;
+const db =require('./config/database') ;
 
 const app = express();
 const PORT = process.env.PORT || 6000;
@@ -11,11 +11,21 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
-app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
+app.listen(PORT, async () =>{
+  try {
+    await db.authenticate();
+    console.log(`Connection has been established successfully.\nServer running on port: ${PORT}`);
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+});
 
 app.use("/", (req,res)=>{
   res.status(200).send("Hello express");
 })
+
+
+
 
 // app.use("/posts", postRoutes);
 // const CONNECTION_URL = 'mongodb+srv://panumas:qwerty123456@memories.g6swm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
