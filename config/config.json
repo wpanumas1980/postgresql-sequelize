@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "user",
+    "password": "pass",
+    "database": "pern_blog",
+    "host": "postgresql",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "admin",
+    "password": null,
+    "database": "pern_blog",
+    "host": "postgresql",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "admin",
+    "password": null,
+    "database": "pern_blog",
+    "host": "postgresql",
+    "dialect": "postgres"
+  }
+}

@@ -1,0 +1,41 @@
+version: "3.9"
+services: 
+  api-server:
+    image: pern-api
+    build: .
+    command: yarn dev
+    ports: 
+      - 5000:5000
+    networks: 
+      - pern-app
+    depends_on: 
+      - postgresql
+  postgresql:
+    image: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: pern_blog
+    ports: 
+      - 5432:5432
+    networks: 
+      - pern-app
+    volumes: 
+      - ./pg_data:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    environment: 
+      PGADMIN_DEFAULT_EMAIL: user@domain.com
+      PGADMIN_DEFAULT_PASSWORD: pass
+    ports: 
+      - 80:80
+    networks: 
+      - pern-app
+    depends_on:
+      - postgresql
+networks:
+  pern-app:
+    driver: bridge 
+volumes: 
+  pg_data:
+    driver: local
