@@ -7,15 +7,15 @@
     "dialect": "postgres"
   },
   "test": {
-    "username": "admin",
-    "password": null,
+    "username": "user",
+    "password": "pass",
     "database": "pern_blog",
     "host": "postgresql",
     "dialect": "postgres"
   },
   "production": {
-    "username": "admin",
-    "password": null,
+    "username": "user",
+    "password": "pass",
     "database": "pern_blog",
     "host": "postgresql",
     "dialect": "postgres"
