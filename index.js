@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const { sequelize } = require('./models');
+const { sequelize, User } = require('./models');
 
 const app = express();
 const PORT = process.env.PORT || 6000;
@@ -15,22 +15,30 @@ app.use(cors());
 app.listen(PORT, async () => {
   try {
     await sequelize.sync({ force: true });
-    console.log(`Connection has been established successfully.\nServer running on port: ${PORT}`);
+    console.log(`Connection has been established successfully.\nServer running at http://localhost: ${PORT}`);
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
 });
-// app.listen(PORT, async () =>{
-//   try {
-//     await db.authenticate();
-//     console.log(`Connection has been established successfully.\nServer running on port: ${PORT}`);
-//   } catch (error) {
-//     console.error('Unable to connect to the database:', error);
-//   }
-// });
 
-app.use("/", (req, res) => {
-  res.status(200).send("Hello express");
+app.get('/users', async (req, res) => {
+  try {
+    const users = await User.findAll();
+    return res.json(users);
+  } catch (error) {
+    console.log(error);
+    return res.status.apply(500).json({error:'Somthing went wrong'})
+  }
+})
+app.post('/user', async (req, res) => {
+  const { name, email, role, userName } = req.body;
+  try {
+    const user = await User.create({ name, email, role, userName });
+    return res.json(user)
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error)
+  }
 })
 
 
