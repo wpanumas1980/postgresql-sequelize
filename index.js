@@ -14,7 +14,7 @@ app.use(cors());
 
 app.listen(PORT, async () => {
   try {
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
     console.log(`Connection has been established successfully.\nServer running at http://localhost: ${PORT}`);
   } catch (error) {
     console.error('Unable to connect to the database:', error);
@@ -27,9 +27,24 @@ app.get('/users', async (req, res) => {
     return res.json(users);
   } catch (error) {
     console.log(error);
-    return res.status.apply(500).json({error:'Somthing went wrong'})
+    return res.status.apply(500).json({ error: 'Somthing went wrong' })
   }
-})
+});
+
+app.get('/users/:uuid', async (req, res) => {
+  const uuid = req.params.uuid;
+  try {
+    const user = await User.findOne({
+      where: { uuid },
+    })
+    return res.json(user);
+  } catch (error) {
+    console.log(error);
+    return res.status.apply(500).json({ error: 'Somthing went wrong' })
+  }
+});
+
+
 app.post('/user', async (req, res) => {
   const { name, email, role, userName } = req.body;
   try {
@@ -39,7 +54,8 @@ app.post('/user', async (req, res) => {
     console.log(error);
     return res.status(500).json(error)
   }
-})
+});
+
 
 
 
