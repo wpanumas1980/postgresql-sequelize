@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-const { sequelize, User } = require('./models');
+const { sequelize, User, Post } = require('./models');
 
 const app = express();
 const PORT = process.env.PORT || 6000;
@@ -14,7 +14,8 @@ app.use(cors());
 
 app.listen(PORT, async () => {
   try {
-    await sequelize.sync({ force: false });
+    // await sequelize.sync({ force: true});
+    await sequelize.authenticate();
     console.log(`Connection has been established successfully.\nServer running at http://localhost: ${PORT}`);
   } catch (error) {
     console.error('Unable to connect to the database:', error);
@@ -56,7 +57,17 @@ app.post('/user', async (req, res) => {
   }
 });
 
-
+app.post('/post', async (req, res) => {
+  const { userUuid, body } = req.body;
+  try {
+    const user = await User.findOne({ where: { uuid: userUuid } });
+    const post = await Post.create({ body, userId: user.id });
+    return res.json(post)
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error)
+  }
+});
 
 
 
