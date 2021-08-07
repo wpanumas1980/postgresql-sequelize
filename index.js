@@ -37,6 +37,7 @@ app.get('/users/:uuid', async (req, res) => {
   try {
     const user = await User.findOne({
       where: { uuid },
+      include: 'posts'
     })
     return res.json(user);
   } catch (error) {
@@ -72,7 +73,7 @@ app.post('/post', async (req, res) => {
 app.get('/posts', async (req, res) => {
   try {
 
-    const posts = await Post.findAll({ include: [{ model: User, as: 'user' }] });
+    const posts = await Post.findAll({ include: 'user' });
 
     return res.json(posts)
   } catch (error) {
@@ -81,7 +82,36 @@ app.get('/posts', async (req, res) => {
   }
 });
 
+app.delete('/users/:uuid', async (req, res) => {
+  const uuid = req.params.uuid;
+  try {
+    const user = await User.findOne({ where: { uuid } });
+    await user.destroy();
 
+    return res.json({ message: 'User deleted!' });
+  } catch (error) {
+    console.log(error);
+    return res.status.apply(500).json({ error: 'Somthing went wrong' })
+  }
+});
+
+app.put('/users/:uuid', async (req, res) => {
+  const uuid = req.params.uuid;
+  const { name, email, role } = req.body;
+  try {
+    const user = await User.findOne({ where: { uuid } });
+    user.name = name;
+    user.email = email;
+    user.role = role;
+
+    await user.save();
+
+    return res.json(user);
+  } catch (error) {
+    console.log(error);
+    return res.status.apply(500).json({ error: 'Somthing went wrong' })
+  }
+});
 
 // app.use("/posts", postRoutes);
 // const CONNECTION_URL = 'mongodb+srv://panumas:qwerty123456@memories.g6swm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
